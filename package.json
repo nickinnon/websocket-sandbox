@@ -1,0 +1,18 @@
+{
+  "name": "websocket-sandbox",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "npx ts-node app/server.ts"
+  },
+  "dependencies": {
+    "uuid": "^11.1.0",
+    "ws": "^8.18.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.17.28",
+    "@types/ws": "^8.18.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.2"
+  }
+}
