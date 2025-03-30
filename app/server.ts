@@ -2,7 +2,7 @@ import http from 'http';
 import { WebSocketServer, WebSocket } from 'ws';
 import { CredentialUtil } from './security/credentialUtil';
 import { Credential } from './security/types/credential';
-
+import { RoomController } from './rooms/RoomController';
 CredentialUtil.generateBearerTokens()
     .forEach(encodedUser => console.log(`Bearer ${encodedUser}`));
 
@@ -36,7 +36,9 @@ wss.on('connection', (socket: WebSocket, req) => {
     socket.on('message', (message: string) => {
       console.log(`Received: ${message}`);
 
-      socket.send(`Echo: ${message}`);
+      routeRequest(socket, JSON.parse(message));
+
+    //   socket.send(`Echo: ${message}`);
     });
   
     socket.on('close', () => {
@@ -47,3 +49,20 @@ wss.on('connection', (socket: WebSocket, req) => {
   httpServer.listen(8080, () => {
     
   });
+
+  function routeRequest(socket, request) {
+    const { type, ...message } = request;
+
+    switch (type) {
+        case 'rooms/message':
+            new RoomController(socket).broadcastToRoom();
+            break;
+        case 'rooms/create':
+            new RoomController(socket).createRoom(message);
+            break;
+        default:
+            socket.send(`No action not found for type: ${type}`);
+
+    }
+
+  }
