@@ -1,4 +1,5 @@
 import { v4 as uuid } from 'uuid';
+import { WebSocket } from 'ws';
 
 class ClientsRepository {
     private clients : Map<string, WebSocket> = new Map();
@@ -9,9 +10,9 @@ class ClientsRepository {
         return client;
     }
 
-    public connectClient = (connection: WebSocket) => {
-        const clientId = uuid();
-        this.clients.set(clientId, connection);
+    public connectClient = (userId, connection: WebSocket) => {
+        // const clientId = uuid();
+        this.clients.set(userId, connection);
     }
 
     public disconnectClient(clientId: string) {

@@ -25,12 +25,28 @@ export class RoomController {
         });
     }
 
-    broadcastToRoom() {
-        this.sessionClient.send(JSON.stringify({ res: "Hello World!" }));
+    broadcastToRoom(request) {
+        const usersInRoom = this.roomService.getUserlistByRoom(request);
+        
+        for (let user of usersInRoom) {
+            const socket = this.clientRepository.getClient(user);
+
+            if (socket) {
+                socket.send(JSON.stringify({
+                    type: 'rooms/broadcast',
+                    message: 'Send to all!'
+                }));
+            }
+        }
     }
     
-    joinRoom() {
+    joinRoom({ userId, roomId }) {
+        this.roomService.addUserToRoom({ userId, roomId });
 
+        this.sessionClient.send(JSON.stringify({
+            type: 'rooms/join',
+            message: `Joined room with id ${roomId}`,
+        }));
     }
 
 }

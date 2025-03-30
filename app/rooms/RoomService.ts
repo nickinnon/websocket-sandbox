@@ -9,7 +9,7 @@ class RoomService {
     private roomToUsers = new Map<string, Set<string>>();
 
     createRoom({user, name, description}) {
-        const id = uuidv4();
+        const id = 'aeea2113-3a11-4041-9b41-d88c93eb9315';//uuidv4();
         const room = {
             id,
             name,
@@ -17,10 +17,13 @@ class RoomService {
         } as Room;
 
         this.chatRooms.set(id, room);
-        this.addUserToRoom({ 
-            userId: user.id,
-            roomId: room.id
-         });
+
+        if (user) {
+            this.addUserToRoom({ 
+                userId: user.id,
+                roomId: room.id
+             });
+        }
 
         return this.chatRooms.get(id);
     }
@@ -33,6 +36,8 @@ class RoomService {
         if (!this.roomToUsers.has(roomId)) {
             this.roomToUsers.set(roomId, new Set());
         }
+
+        console.log(`Add user ${userId} to room ${roomId}`);
 
         this.userToRooms.get(userId).add(roomId);
         this.roomToUsers.get(roomId).add(userId);
