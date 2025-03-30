@@ -5,6 +5,7 @@ import { Credential } from './security/types/credential';
 import { RoomController } from './rooms/RoomController';
 import ClientsRepository from './client/ClientsRepository';
 import RoomService from './rooms/RoomService';
+import PresenceController from './presence/PresenceController';
 
 CredentialUtil.generateBearerTokens()
     .forEach(encodedUser => console.log(`Bearer ${encodedUser}`));
@@ -35,23 +36,13 @@ httpServer.on('upgrade', (req, socket, head) => {
 wss.on('connection', (socket: WebSocket, req) => {
     const authHeader = req.headers['authorization'];
     const user = credentialUtil.decodeCredential(authHeader) as Credential;
-    
-    ClientsRepository.connectClient(user.sub, socket);
-    new RoomController(socket).joinRoom({ userId: user.sub, roomId: globalChatId });
 
-    console.log(`Client connected with userID ${user.sub}`);
-    socket.send(`Client connected with userID ${user.sub}`);
-
-    new RoomController(socket).createRoom({ 
-        userId: user.sub,
-        name: `private-${user.sub}`,
-        description: 'Your personal room'
-    });
+    spawnUser(user.sub, socket);
   
     socket.on('message', (message: string) => {
       console.log(`Received: ${message}`);
 
-      routeRequest(socket, JSON.parse(message));
+      routeRequest(socket, JSON.parse(message), user.sub);
     });
   
     socket.on('close', () => {
@@ -63,7 +54,22 @@ wss.on('connection', (socket: WebSocket, req) => {
     
   });
 
-  function routeRequest(socket, request) {
+  function spawnUser(userId, socket) {
+    ClientsRepository.connectClient(userId, socket);
+
+    new RoomController(socket).joinRoom({ userId, roomId: globalChatId });
+    new PresenceController(userId, socket).moveUser({ coords: {x: 0, y: 0} });
+    new RoomController(socket).createRoom({ 
+        userId,
+        name: `private-${userId}`,
+        description: 'Your personal room'
+    });
+
+    console.log(`Client connected with userID ${userId}`);
+    socket.send(`Client connected with userID ${userId}`);
+  }
+
+  function routeRequest(socket, request, userId) {
     const { type, ...message } = request;
 
     switch (type) {
@@ -72,6 +78,9 @@ wss.on('connection', (socket: WebSocket, req) => {
             break;
         case 'rooms/create':
             new RoomController(socket).createRoom(message);
+            break;
+        case 'presence/move':
+            new PresenceController(userId, socket).moveUser(message);
             break;
         default:
             socket.send(`No action not found for type: ${type}`);
