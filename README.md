@@ -3,11 +3,14 @@
  This poject uses `ws` to configure a basic Websocket server. [Documentation can be found here](https://github.com/websockets/ws/blob/HEAD/doc/ws.md#event-headers)
 
  ## Demo
+
+ ### Clients
  Clients are identified with a Base64 Bearer Token in headers. Example tokens are logged on startup, and can be passed to your TCP client to establish a connection.
 
- On startup, the server will log a GUID `roomId`, which is the global ID for chat all users are added to on initial connection.
-
  In your TCP client, connect with a Bearer Token. Once connected, you can broadcast a message to the global channel with a JSON push.
+
+### Rooms
+On startup, the server will log a GUID `roomId`, which is the global ID for chat all users are added to on initial connection.
 
  ```JSON
  {
@@ -16,6 +19,20 @@
     "message": "This is Alice."
 }
  ```
+
+ ### Presence
+ Users are spawned at a default location 0,0. On every position update, each user within proximity will recieve an updated map of nearby users.
+
+ Example Move Message
+ ```JSON
+ {
+    "type": "presence/move",
+    "coords": {
+        "x": 100,
+        "y": 0
+    }
+}
+```
 
  ## Development
  It is highly reccomended to use Docker + Dev Containers, which will configure your development environment automatically. The DevContainer will inherit your .gitconfig from your hostmachine at runtime.

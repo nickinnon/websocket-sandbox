@@ -5,12 +5,21 @@ class PresenceService {
     private radius = 2;
     private presenceRepository = PresenceRepository;
 
+    getUsersInProximity(userId) {
+        const coords = this.presenceRepository.getUserPosition(userId);
+
+        // no previous position
+        return coords
+            ? this.filterMapByProximity(coords, this.presenceRepository.getAllCoords())
+            : [];
+    }
+    
     moveUser({ userId, coords }) {
         const positionMap = this.presenceRepository.updatePosition({ coords, userId});
         return this.filterMapByProximity(coords, positionMap);
     }
 
-    filterMapByProximity(position: Coords, presenceMap: Map<string, Coords>) {
+    private filterMapByProximity(position: Coords, presenceMap: Map<string, Coords>) {
         return [...presenceMap].filter((([userId, coords]) => {
             return this.isNearby(this.radius, position, coords);
         }))

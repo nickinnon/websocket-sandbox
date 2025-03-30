@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "npx ts-node-dev --respawn --transpile-only app/server.ts",
+    "debug": "npx ts-node-dev --inspect=0.0.0.0:9229 --respawn --transpile-only app/server.ts",
     "server": "npx ts-node app/server.ts"
   },
   "dependencies": {

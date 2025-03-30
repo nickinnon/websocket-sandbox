@@ -7,6 +7,14 @@ class PresenceRepository {
         this.userLocations.set(userId, coords);
         return this.userLocations;
     }
+
+    getUserPosition(userId) {
+        return this.userLocations.get(userId);
+    }
+
+    getAllCoords() {
+        return this.userLocations;
+    }
 }
 
 export default new PresenceRepository();

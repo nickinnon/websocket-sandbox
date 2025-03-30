@@ -14,10 +14,15 @@ class PresenceController {
     }
 
     moveUser({ coords }) {
-        const positionMap = this.presenceService.moveUser({ coords, userId: this.sessionUserId });
-        positionMap.forEach(([userId, currentPosition]) => {
+        const prevPositionMap = this.presenceService.getUsersInProximity(this.sessionUserId);
+        const nextPostionMap = this.presenceService.moveUser({ coords, userId: this.sessionUserId });
+
+        // Include users that were previously in proximity, but are not anymore.
+        const reconciledMap = new Map([ ...prevPositionMap, ...nextPostionMap ]);
+        
+        reconciledMap.forEach((currentPosition, userId) => {
             const connection = this.clientsRepository.getClient(userId);
-            const userProximityMap = this.presenceService.filterMapByProximity(currentPosition, new Map(positionMap));
+            const userProximityMap = this.presenceService.getUsersInProximity(userId);
 
             connection.send(JSON.stringify({
                 type: 'presence/map',
