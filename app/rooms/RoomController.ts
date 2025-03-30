@@ -34,7 +34,7 @@ export class RoomController {
             if (socket) {
                 socket.send(JSON.stringify({
                     type: 'rooms/broadcast',
-                    message: 'Send to all!'
+                    message: request.message,
                 }));
             }
         }
