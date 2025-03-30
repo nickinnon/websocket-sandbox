@@ -2,6 +2,21 @@
  
  This poject uses `ws` to configure a basic Websocket server. [Documentation can be found here](https://github.com/websockets/ws/blob/HEAD/doc/ws.md#event-headers)
 
+ ## Demo
+ Clients are identified with a Base64 Bearer Token in headers. Example tokens are logged on startup, and can be passed to your TCP client to establish a connection.
+
+ On startup, the server will log a GUID `roomId`, which is the global ID for chat all users are added to on initial connection.
+
+ In your TCP client, connect with a Bearer Token. Once connected, you can broadcast a message to the global channel with a JSON push.
+
+ ```JSON
+ {
+    "type": "rooms/message",
+    "roomId": "aeea2113-3a11-4041-9b41-d88c93eb9315",
+    "message": "This is Alice."
+}
+ ```
+
  ## Development
  It is highly reccomended to use Docker + Dev Containers, which will configure your development environment automatically. The DevContainer will inherit your .gitconfig from your hostmachine at runtime.
  
