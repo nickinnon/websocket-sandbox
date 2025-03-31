@@ -2,6 +2,8 @@
  
  This poject uses `ws` to configure a basic Websocket server. [Documentation can be found here](https://github.com/websockets/ws/blob/HEAD/doc/ws.md#event-headers)
 
+ There is no persistance. This app runs entirely in memory.
+
  ## Demo
 
  ### Clients

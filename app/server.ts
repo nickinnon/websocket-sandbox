@@ -59,6 +59,9 @@ wss.on('connection', (socket: WebSocket, req) => {
   function spawnUser(userId, socket) {
     ClientsRepository.connectClient(userId, socket);
 
+    // 
+    setTimeout(() => ClientService.queueMessage({ userId, message : { message: 'This message will be sent within 3-5 ticks' } }), 3000);
+
     new RoomController(socket).joinRoom({ userId, roomId: globalChatId });
     new PresenceController(userId, socket).moveUser({ coords: {x: 0, y: 0} });
     new RoomController(socket).createRoom({ 
