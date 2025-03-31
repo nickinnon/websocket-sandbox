@@ -37,8 +37,6 @@ class RoomService {
             this.roomToUsers.set(roomId, new Set());
         }
 
-        console.log(`Add user ${userId} to room ${roomId}`);
-
         this.userToRooms.get(userId).add(roomId);
         this.roomToUsers.get(roomId).add(userId);
 
