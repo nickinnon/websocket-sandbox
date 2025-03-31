@@ -22,6 +22,10 @@ class ClientsRepository {
             this.clients.delete(clientId);
         }
     }
+
+    public getAllClients() {
+        return this.clients;
+    }
 }
 
 export default new ClientsRepository();

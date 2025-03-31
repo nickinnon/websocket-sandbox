@@ -6,6 +6,7 @@ import { RoomController } from './rooms/RoomController';
 import ClientsRepository from './client/ClientsRepository';
 import RoomService from './rooms/RoomService';
 import PresenceController from './presence/PresenceController';
+import ClientService from './client/ClientService';
 
 CredentialUtil.generateBearerTokens()
     .forEach(encodedUser => console.log(`Bearer ${encodedUser}`));
@@ -13,6 +14,7 @@ CredentialUtil.generateBearerTokens()
 const httpServer = http.createServer();
 const wss = new WebSocketServer({ noServer: true });
 const credentialUtil = new CredentialUtil();
+const clientsService = ClientService;
 
 const globalChatId = RoomService.createRoom({ user: null, name: 'global', description: 'Global Channel' }).id;
 console.log(`Global Room ID: ${globalChatId}`);
